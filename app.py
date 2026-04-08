@@ -31,7 +31,7 @@ def retry_api_call(gemini_history, retries=3, delay=2):
     for attempt in range(retries):
         try:
             response = client.models.generate_content(
-                model='gemini-2.5-flash',
+                model='gemini-1.5-flash',
                 contents=gemini_history,
                 config=types.GenerateContentConfig(system_instruction=syncbot_persona)
             )
