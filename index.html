@@ -299,7 +299,7 @@
             inputField.value = "";
 
             try {
-                const response = await fetch("https://syncbot-web.onrender.com/chat", {
+                const response = await fetch("https://syncbot-web-new.onrender.com/chat", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
@@ -346,7 +346,7 @@
             const badge = document.getElementById("status-badge");
             try {
                 // Try to ping the new /health route
-                const response = await fetch("https://syncbot-web.onrender.com/health");
+                const response = await fetch("https://syncbot-web-new.onrender.com/health");
                 if (response.ok) {
                     badge.innerHTML = "🟢 Online";
                     badge.classList.remove("offline");
