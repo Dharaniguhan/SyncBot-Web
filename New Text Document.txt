@@ -1,0 +1,60 @@
+from flask import Flask, request, jsonify
+from flask_cors import CORS
+from google import genai
+from google.genai import types
+import os
+
+app = Flask(__name__)
+CORS(app) # This allows your HTML webpage to talk to this Python server
+
+# Setup the AI Client 
+# (Make sure to set GEMINI_API_KEY as an environment variable in your system!)
+client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY"))
+
+syncbot_persona = """You are SyncBot, a friendly and helpful assistant specializing strictly in Synchronization in Digital Communication. 
+Your primary goals are to teach, explain, and quiz users on topics like Phase-Locked Loops (PLL), Frame Synchronization, Carrier Synchronization, Symbol Timing Recovery, etc.
+
+CRITICAL INSTRUCTION ON TONE AND LENGTH: 
+1. Keep your answers SHORT, concise, and punchy. Avoid giant walls of text.
+2. Keep the language SIMPLE. Break down complex math or theories into plain English. 
+3. Use real-world analogies whenever possible. Imagine you are explaining this to a second-year ECE student who is hearing about these concepts for the very first time.
+
+CRITICAL RULE ON TOPIC: If a user asks a question completely unrelated to electronics, telecommunications, or synchronization, you MUST politely decline to answer and steer the conversation back to your area of expertise."""
+
+@app.route('/chat', methods=['POST'])
+def chat():
+    data = request.json
+    user_message = data.get("message")
+    
+    # The frontend will now keep track of the history and send it to us
+    frontend_history = data.get("history", []) 
+    
+    # Convert frontend history format into Gemini's format
+    gemini_history = [
+        types.Content(role=m["role"], parts=[types.Part(text=m["content"])])
+        for m in frontend_history
+    ]
+    
+    # Add the new user message to the history
+    gemini_history.append(
+        types.Content(role="user", parts=[types.Part(text=user_message)])
+    )
+
+    try:
+        response = client.models.generate_content(
+            model='gemini-2.5-flash',
+            contents=gemini_history,
+            config=types.GenerateContentConfig(system_instruction=syncbot_persona)
+        )
+        return jsonify({"reply": response.text})
+    
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+if __name__ == '__main__':
+    app.run(port=5000, debug=True)
+
+# The "Heartbeat" route for the frontend to check if the server is alive
+@app.route('/health', methods=['GET'])
+def health_check():
+    return jsonify({"status": "online"})

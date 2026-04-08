@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <title>PTU | Digital Communication Bots</title>
+    <style>
+        /* Offline status style */
+        .bot-status.offline {
+            background-color: #fde8e8;
+            color: #c81e1e;
+            border: 1px solid #f8b4b4;
+        }
+
+        /* PTU Official Theme Colors */
+        :root {
+            --ptu-primary: #c40d0d;
+            /* Academic Blue */
+            --ptu-secondary: #f0a500;
+            /* Accent Gold */
+            --ptu-bg: #f4f6f8;
+            --ptu-text: #333333;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--ptu-bg);
+            color: var(--ptu-text);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Official University Header */
+        header {
+            background-color: var(--ptu-primary);
+            color: white;
+            padding: 15px 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .uni-logo {
+            width: 70px;
+            height: 70px;
+            background-color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: var(--ptu-primary);
+            font-size: 11px;
+            text-align: center;
+            border: 2px solid var(--ptu-secondary);
+        }
+
+        .uni-titles h1 {
+            margin: 0;
+            font-size: 24px;
+            letter-spacing: 0.5px;
+        }
+
+        .uni-titles h2 {
+            margin: 5px 0 0 0;
+            font-size: 14px;
+            font-weight: 400;
+            color: #d1e0ec;
+        }
+
+        /* Navigation Bar for connecting your peers' bots later */
+        nav {
+            background-color: #ffffff;
+            border-bottom: 4px solid var(--ptu-secondary);
+            padding: 12px 40px;
+            display: flex;
+            gap: 20px;
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--ptu-primary);
+            padding: 6px 12px;
+            border-radius: 4px;
+            transition: all 0.2s ease-in-out;
+        }
+
+        nav a.active,
+        nav a:hover {
+            background-color: var(--ptu-primary);
+            color: white;
+        }
+
+        /* Main Chat Container */
+        main {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        .chat-container {
+            width: 100%;
+            max-width: 900px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border: 1px solid #e0e0e0;
+        }
+
+        .chat-header {
+            background-color: white;
+            color: var(--ptu-primary);
+            padding: 20px;
+            font-size: 20px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+        }
+
+        .bot-status {
+            font-size: 12px;
+            background-color: #e8f4fd;
+            color: var(--ptu-primary);
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-weight: bold;
+            border: 1px solid #b6dfff;
+        }
+
+        .chat-box {
+            height: 450px;
+            padding: 25px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            background-color: #fafbfc;
+        }
+
+        /* Chat Bubbles */
+        .message {
+            max-width: 75%;
+            padding: 14px 18px;
+            border-radius: 8px;
+            line-height: 1.5;
+            font-size: 15px;
+        }
+
+        .bot {
+            background-color: #ffffff;
+            color: var(--ptu-text);
+            align-self: flex-start;
+            border: 1px solid #e0e0e0;
+            border-left: 4px solid var(--ptu-primary);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+        }
+
+        .user {
+            background-color: var(--ptu-primary);
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 0;
+            box-shadow: 0 2px 4px rgba(0, 40, 90, 0.2);
+        }
+
+        /* Input Area */
+        .input-area {
+            display: flex;
+            padding: 20px;
+            background: white;
+            border-top: 1px solid #eee;
+        }
+
+        .input-area input {
+            flex: 1;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px 0 0 6px;
+            font-size: 15px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .input-area input:focus {
+            border-color: var(--ptu-primary);
+        }
+
+        .input-area button {
+            background-color: var(--ptu-primary);
+            color: white;
+            border: none;
+            padding: 0 25px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 0 6px 6px 0;
+            transition: background 0.3s;
+        }
+
+        .input-area button:hover {
+            background-color: #c40d0d;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #1a1a1a;
+            color: #aaaaaa;
+            text-align: center;
+            padding: 20px;
+            font-size: 13px;
+        }
+
+        /* Fix Markdown Spacing */
+        .message p {
+            margin: 0 0 10px 0;
+        }
+
+        .message p:last-child {
+            margin: 0;
+        }
+
+        .message ul,
+        .message ol {
+            margin-top: 5px;
+            margin-bottom: 5px;
+            padding-left: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="header-left">
+            <img src="ptu-logo.png" alt="PTU Logo" class="uni-logo" style="object-fit: contain; background-color: white; padding: 2px;">
+            <div class="uni-titles">
+                <h1>Puducherry Technological University</h1>
+                <h2>Department of Electronics and Communication Engineering</h2>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="chat-container">
+            <div class="chat-header">
+                📡 SyncBot: Digital Communication
+                <span id="status-badge" class="bot-status">🟡 Checking...</span>
+            </div>
+
+            <div id="chat-box" class="chat-box">
+                <div class="message bot">Hello! I am SyncBot. Ask me anything about synchronization in digital
+                    communication.</div>
+            </div>
+
+            <div class="input-area">
+                <input type="text" id="user-input" placeholder="Type your message here..."
+                    onkeypress="handleKeyPress(event)">
+                <button onclick="sendMessage()">Send</button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        let chatHistory = [];
+
+        // Allows the user to press 'Enter' to send a message
+        function handleKeyPress(event) {
+            if (event.key === "Enter") {
+                sendMessage();
+            }
+        }
+
+        async function sendMessage() {
+            const inputField = document.getElementById("user-input");
+            const message = inputField.value;
+            if (!message) return;
+
+            appendMessage("user", message);
+            inputField.value = "";
+
+            try {
+                const response = await fetch("http://localhost:5000/chat", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        message: message,
+                        history: chatHistory
+                    })
+                });
+
+                const data = await response.json();
+
+                chatHistory.push({ role: "user", content: message });
+
+                if (data.reply) {
+                    appendMessage("bot", data.reply);
+                    chatHistory.push({ role: "model", content: data.reply });
+                } else {
+                    appendMessage("bot", "⚠️ Error connecting to backend.");
+                }
+
+            } catch (error) {
+                appendMessage("bot", "⚠️ Backend server is offline. Please ensure app.py is running.");
+            }
+        }
+
+        function appendMessage(sender, text) {
+            const chatBox = document.getElementById("chat-box");
+            const msgDiv = document.createElement("div");
+            msgDiv.className = "message " + sender;
+
+            // If the bot is talking, translate the Markdown into HTML
+            if (sender === "bot") {
+                msgDiv.innerHTML = marked.parse(text);
+            } else {
+                // If the user is talking, just show plain text
+                msgDiv.textContent = text;
+            }
+
+            chatBox.appendChild(msgDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        // Function to check if the Python backend is running
+        async function checkServerStatus() {
+            const badge = document.getElementById("status-badge");
+            try {
+                // Try to ping the new /health route
+                const response = await fetch("http://localhost:5000/health");
+                if (response.ok) {
+                    badge.innerHTML = "🟢 Online";
+                    badge.classList.remove("offline");
+                } else {
+                    throw new Error("Server not OK");
+                }
+            } catch (error) {
+                // If the fetch fails (server is off), change to offline
+                badge.innerHTML = "🔴 Offline";
+                badge.classList.add("offline");
+            }
+        }
+
+        // Check the status immediately when the page loads
+        checkServerStatus();
+        
+        // Then check it again every 5 seconds (5000 milliseconds)
+        setInterval(checkServerStatus, 5000);
+
+    </script>
+
+</body>
+
+</html>
