@@ -245,6 +245,55 @@
             margin-bottom: 5px;
             padding-left: 20px;
         }
+        /* =========================================
+        📱 MOBILE RESPONSIVE TWEAKS 
+        ========================================= */
+        @media screen and (max-width: 768px) {
+            
+            /* 1. Shrink the giant header */
+            .header-container { /* Change to your header's class name */
+                padding: 10px 15px;
+            }
+            
+            .header-logo { /* Change to your logo's class/ID */
+                width: 50px; 
+                height: 50px;
+            }
+            
+            .header-title h1 { /* Change to your H1 class */
+                font-size: 1.2rem;
+                margin-bottom: 2px;
+            }
+            
+            .header-title p { /* Change to your subtext class */
+                font-size: 0.75rem;
+            }
+
+            /* 2. Expand the chat box to fill the screen */
+            .chat-container { /* Change to your main white box class */
+                width: 100%;
+                height: 100vh; /* Fill the whole vertical height */
+                margin: 0;
+                border-radius: 0; /* Remove rounded corners for a native app feel */
+                border: none;
+            }
+
+            /* 3. Let messages stretch wider */
+            .bot-message, .user-message { 
+                max-width: 90%; /* Let text use most of the screen width */
+                font-size: 0.95rem; /* Slightly smaller text for mobile readability */
+            }
+
+            /* 4. Fix the input bar spacing */
+            .input-area {
+                padding: 10px;
+                padding-bottom: 20px; /* Adds a little breathing room near the home bar/keyboard */
+            }
+            
+            #user-input {
+                font-size: 16px; /* Prevents iPhones from auto-zooming when typing! */
+            }
+        }
     </style>
 </head>
 
