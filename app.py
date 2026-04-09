@@ -53,16 +53,21 @@ def chat():
         user_message = data.get("message")
         frontend_history = data.get("history", []) 
         
-        gemini_history = [
-            types.Content(role=m["role"], parts=[types.Part.from_text(text=m["content"])])
-            for m in frontend_history
-        ]
+        # 1. Safely translate frontend history into Google's strict format
+        gemini_history = []
+        for m in frontend_history:
+            # If the frontend says 'bot' or 'assistant', force it to be 'model'
+            safe_role = "user" if m["role"] == "user" else "model"
+            gemini_history.append(
+                types.Content(role=safe_role, parts=[types.Part.from_text(text=m["content"])])
+            )
         
+        # 2. Add the user's newest message
         gemini_history.append(
             types.Content(role="user", parts=[types.Part.from_text(text=user_message)])
         )
 
-        # Use our new retry function instead of calling the client directly
+        # 3. Call the API using our retry logic
         reply_text = retry_api_call(gemini_history)
         
         return jsonify({"reply": reply_text})
@@ -72,6 +77,3 @@ def chat():
         traceback.print_exc() 
         print("=======================\n")
         return jsonify({"error": str(e)}), 500
-
-if __name__ == '__main__':
-    app.run(port=5000, debug=True)
