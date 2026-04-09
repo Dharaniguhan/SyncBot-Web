@@ -262,11 +262,7 @@
 
     <main>
         <div class="chat-container">
-            <div class="chat-header">
-                📡 SyncBot: Digital Communication
-                <span id="status-badge" class="bot-status">🟡 Checking...</span>
-            </div>
-
+            
             <div id="chat-box" class="chat-box">
                 <div class="message bot">Hello! I am SyncBot. Ask me anything about synchronization in digital
                     communication.</div>
@@ -340,31 +336,6 @@
             chatBox.appendChild(msgDiv);
             chatBox.scrollTop = chatBox.scrollHeight;
         }
-
-        // Function to check if the Python backend is running
-        async function checkServerStatus() {
-            const badge = document.getElementById("status-badge");
-            try {
-                // Try to ping the new /health route
-                const response = await fetch("https://syncbot-web-new.onrender.com/health");
-                if (response.ok) {
-                    badge.innerHTML = "🟢 Online";
-                    badge.classList.remove("offline");
-                } else {
-                    throw new Error("Server not OK");
-                }
-            } catch (error) {
-                // If the fetch fails (server is off), change to offline
-                badge.innerHTML = "🔴 Offline";
-                badge.classList.add("offline");
-            }
-        }
-
-        // Check the status immediately when the page loads
-        checkServerStatus();
-        
-        // Then check it again every 5 seconds (5000 milliseconds)
-        setInterval(checkServerStatus, 5000);
 
     </script>
 

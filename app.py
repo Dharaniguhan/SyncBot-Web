@@ -22,10 +22,6 @@ CRITICAL INSTRUCTION ON TONE AND LENGTH:
 
 CRITICAL RULE ON TOPIC: If a user asks a question completely unrelated to electronics, telecommunications, or synchronization, you MUST politely decline to answer and steer the conversation back to your area of expertise."""
 
-@app.route('/health', methods=['GET'])
-def health_check():
-    return jsonify({"status": "online"})
-
 # A helper function to safely call the API and retry if Google is busy
 def retry_api_call(gemini_history, retries=3, delay=2):
     for attempt in range(retries):
