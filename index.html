@@ -3,9 +3,17 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <title>PTU | Digital Communication Bots</title>
+
+    <div class="input-area">
+        <div class="input-wrapper">
+            <input type="text" id="user-input" placeholder="Type your message here..." onkeypress="handleKeyPress(event)">
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
     <style>
         /* Offline status style */
         .bot-status.offline {
@@ -24,37 +32,39 @@
             --ptu-text: #333333;
         }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--ptu-bg);
-            color: var(--ptu-text);
+        body, html {
             margin: 0;
             padding: 0;
+            background-color: var(--ptu-bg);
+            color: var(--ptu-text);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            height: 100dvh; /* Forces exact fit to mobile screen */
+            width: 100vw;
+            overflow: hidden; /* Stops the background from scrolling */
             display: flex;
             flex-direction: column;
-            min-height: 100vh;
         }
 
         /* Official University Header */
         header {
             background-color: var(--ptu-primary);
             color: white;
-            padding: 15px 40px;
+            padding: 12px 16px; /* Tighter padding */
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            z-index: 10;
         }
 
         .header-left {
             display: flex;
             align-items: center;
-            gap: 20px;
+            gap: 12px;
         }
 
         .uni-logo {
-            width: 70px;
-            height: 70px;
+            width: 45px; /* Smaller logo for mobile */
+            height: 45px;
             background-color: white;
             border-radius: 50%;
             display: flex;
@@ -62,20 +72,18 @@
             justify-content: center;
             font-weight: bold;
             color: var(--ptu-primary);
-            font-size: 11px;
-            text-align: center;
             border: 2px solid var(--ptu-secondary);
         }
 
         .uni-titles h1 {
             margin: 0;
-            font-size: 24px;
+            font-size: 16px; /* Scaled down text */
             letter-spacing: 0.5px;
         }
 
         .uni-titles h2 {
-            margin: 5px 0 0 0;
-            font-size: 14px;
+            margin: 2px 0 0 0;
+            font-size: 11px; /* Scaled down text */
             font-weight: 400;
             color: #d1e0ec;
         }
@@ -109,20 +117,19 @@
         main {
             flex: 1;
             display: flex;
-            justify-content: center;
-            padding: 40px 20px;
+            flex-direction: column;
+            overflow: hidden;
+            padding: 0; /* Removed the heavy padding */
         }
 
         .chat-container {
             width: 100%;
-            max-width: 900px;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            height: 100%;
             display: flex;
             flex-direction: column;
-            overflow: hidden;
-            border: 1px solid #e0e0e0;
+            background: white;
+            border: none; /* Removed borders and shadow for mobile */
+            border-radius: 0; 
         }
 
         .chat-header {
@@ -148,9 +155,9 @@
         }
 
         .chat-box {
-            height: 450px;
-            padding: 25px;
-            overflow-y: auto;
+            flex: 1; /* Automatically takes all space between header and input */
+            padding: 20px;
+            overflow-y: auto; /* Only the chat messages scroll */
             display: flex;
             flex-direction: column;
             gap: 15px;
@@ -186,7 +193,7 @@
         /* Input Area */
         .input-area {
             display: flex;
-            padding: 20px;
+            padding: 12px 16px 20px 16px; /* Extra bottom padding for iPhone home bar */
             background: white;
             border-top: 1px solid #eee;
         }
@@ -245,55 +252,41 @@
             margin-bottom: 5px;
             padding-left: 20px;
         }
-        /* =========================================
-        📱 MOBILE RESPONSIVE TWEAKS 
-        ========================================= */
-        @media screen and (max-width: 768px) {
-            
-            /* 1. Shrink the giant header */
-            .header-container { /* Change to your header's class name */
-                padding: 10px 15px;
-            }
-            
-            .header-logo { /* Change to your logo's class/ID */
-                width: 50px; 
-                height: 50px;
-            }
-            
-            .header-title h1 { /* Change to your H1 class */
-                font-size: 1.2rem;
-                margin-bottom: 2px;
-            }
-            
-            .header-title p { /* Change to your subtext class */
-                font-size: 0.75rem;
-            }
-
-            /* 2. Expand the chat box to fill the screen */
-            .chat-container { /* Change to your main white box class */
-                width: 100%;
-                height: 100vh; /* Fill the whole vertical height */
-                margin: 0;
-                border-radius: 0; /* Remove rounded corners for a native app feel */
-                border: none;
-            }
-
-            /* 3. Let messages stretch wider */
-            .bot-message, .user-message { 
-                max-width: 90%; /* Let text use most of the screen width */
-                font-size: 0.95rem; /* Slightly smaller text for mobile readability */
-            }
-
-            /* 4. Fix the input bar spacing */
-            .input-area {
-                padding: 10px;
-                padding-bottom: 20px; /* Adds a little breathing room near the home bar/keyboard */
-            }
-            
-            #user-input {
-                font-size: 16px; /* Prevents iPhones from auto-zooming when typing! */
-            }
+        .input-wrapper {
+            display: flex;
+            width: 100%;
+            background-color: #f0f2f5;
+            border-radius: 24px; /* The rounded pill look */
+            padding: 6px 6px 6px 16px;
+            border: 1px solid #e0e0e0;
         }
+
+        .input-wrapper input {
+            flex: 1;
+            padding: 10px 0;
+            border: none;
+            background: transparent;
+            font-size: 16px; /* Crucial: 16px prevents iOS from zooming in */
+            outline: none;
+            color: var(--ptu-text);
+        }
+
+        .input-wrapper button {
+            background-color: var(--ptu-primary);
+            color: white;
+            border: none;
+            padding: 0 20px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 20px; /* Rounded button inside the pill */
+            transition: background 0.3s;
+        }
+
+        .input-wrapper button:hover {
+            background-color: #a00a0a;
+        }
+        
     </style>
 </head>
 
