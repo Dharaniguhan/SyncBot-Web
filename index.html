@@ -6,14 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <title>PTU | Digital Communication Bots</title>
-
-    <div class="input-area">
-        <div class="input-wrapper">
-            <input type="text" id="user-input" placeholder="Type your message here..." onkeypress="handleKeyPress(event)">
-            <button onclick="sendMessage()">Send</button>
-        </div>
-    </div>
-
     <style>
         /* Offline status style */
         .bot-status.offline {
@@ -311,9 +303,10 @@
             </div>
 
             <div class="input-area">
-                <input type="text" id="user-input" placeholder="Type your message here..."
-                    onkeypress="handleKeyPress(event)">
-                <button onclick="sendMessage()">Send</button>
+                <div class="input-wrapper">
+                    <input type="text" id="user-input" placeholder="Type your message here..." onkeypress="handleKeyPress(event)">
+                    <button onclick="sendMessage()">Send</button>
+                </div>
             </div>
         </div>
     </main>
