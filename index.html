@@ -278,6 +278,23 @@
         .input-wrapper button:hover {
             background-color: #a00a0a;
         }
+        /* 📱 1. Put all your NEW, mobile-friendly CSS up here */
+        .chat-container {
+        width: 100%;
+        padding: 10px;
+        }
+
+        /* 💻 2. Add a Media Query for PC/Desktop screens */
+        @media (min-width: 768px) {
+        /* Put your OLD, PC-friendly CSS inside these brackets! */
+        /* These rules will override the mobile ones only on big screens */
+        
+        .chat-container {
+            width: 50%; /* Shrink it back down for PC */
+            margin: 0 auto; /* Center it */
+            padding: 20px;
+        }
+        }
         
     </style>
 </head>
